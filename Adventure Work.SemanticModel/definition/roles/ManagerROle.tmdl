@@ -1,0 +1,7 @@
+role ManagerROle
+	modelPermission: read
+
+	tablePermission Table1 = PATHCONTAINS(Table1[Path],LOOKUPVALUE(Table1[ID],Table1[EMP EMAIL],USERPRINCIPALNAME()))
+
+	annotation PBI_Id = 137ce0265bb1491dbdf248c9ae5b2c0c
+

@@ -1,0 +1,62 @@
+table Table1
+	lineageTag: d597dd09-9b0f-486d-906d-35adf9757bb2
+
+	column ID
+		dataType: int64
+		formatString: 0
+		lineageTag: 244b42ce-0efb-4da6-ad74-a46c3109d8aa
+		summarizeBy: count
+		sourceColumn: ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column EMP
+		dataType: string
+		lineageTag: d72a7c8a-1cf0-4ecc-b986-6dbf1886940e
+		summarizeBy: none
+		sourceColumn: EMP
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'EMP EMAIL'
+		dataType: string
+		lineageTag: bc379aed-81aa-4588-9e24-bca00758bd5d
+		summarizeBy: none
+		sourceColumn: EMP EMAIL
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'MANAGER ID'
+		dataType: int64
+		formatString: 0
+		lineageTag: 635ba7c7-d83f-4aba-81fe-6249fe4d2334
+		summarizeBy: count
+		sourceColumn: MANAGER ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Path = PATH(Table1[ID],Table1[MANAGER ID])
+		lineageTag: d18abfa6-934a-4fc4-93db-0b96b3c47ce7
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column pathcontan = PATHCONTAINS(Table1[Path],LOOKUPVALUE(Table1[ID],Table1[EMP EMAIL],Table1[EMP EMAIL]))
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 7390f4eb-e695-46e3-b745-b3f4951bdb9a
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Table1 = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("D:\Power BI Source\Emp Email.xlsx"), null, true),
+				    Table1_Table = Source{[Item="Table1",Kind="Table"]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(Table1_Table,{{"ID", Int64.Type}, {"EMP", type text}, {"EMP EMAIL", type text}, {"MANAGER ID", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

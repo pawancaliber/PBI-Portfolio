@@ -1,0 +1,48 @@
+table salesamount/cost
+	lineageTag: 063d4cdc-9df7-4898-b94e-2678d4087074
+
+	column salesamount/cost
+		lineageTag: 9baa9ed0-af74-4a0c-a5c1-1f2da16ceb42
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'salesamount/cost Order'
+
+		relatedColumnDetails
+			groupByColumn: 'salesamount/cost Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'salesamount/cost Fields'
+		isHidden
+		lineageTag: 4012514c-4242-415c-b23d-5d2d2d311d61
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'salesamount/cost Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'salesamount/cost Order'
+		isHidden
+		formatString: 0
+		lineageTag: 5aeb1b47-4c1e-4d6e-b0e4-3df11395064b
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition salesamount/cost = calculated
+		mode: import
+		source =
+				{
+				    ("Sales Amount", NAMEOF('Sales'[Sales Amount]), 0),
+				    ("Total Product Cost", NAMEOF('Sales'[Total Product Cost]), 1)
+				}
+
+	annotation PBI_Id = 2f68e50f0bab432d8c299900a9078134
+

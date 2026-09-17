@@ -1,0 +1,37 @@
+table 'Measure Table'
+	lineageTag: 6eabfe35-1745-4a8c-932e-13379b9b680c
+
+	measure 'Sales PY' = CALCULATE([TotalSAle],SAMEPERIODLASTYEAR('Date'[Date]))
+		lineageTag: 2abf3a84-e386-4ff0-9f9b-e140157d8c9d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure YOY = [TotalSAle]-[Sales PY]
+		lineageTag: 8b70d92d-8b8f-42f1-9477-930f824f2db8
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure ytd = TOTALYTD([TotalSAle],'Date'[Date])
+		lineageTag: c9207a5c-28ec-4b76-984a-6ab93ca53ece
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Column1
+		dataType: string
+		lineageTag: 294201ce-4a7f-4716-811a-5462e8376d4f
+		summarizeBy: none
+		sourceColumn: Column1
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Measure Table' = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+
